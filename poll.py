@@ -185,7 +185,7 @@ class Poll(BotPlugin):
 
             poll.options[option] += 1
 
-            return '%s:\n%s' % (current_poll, str(poll))
+            # return '%s:\n%s' % (current_poll, str(poll))
 
     def reset_poll(self, title):
         with self.mutable('polls') as polls:
