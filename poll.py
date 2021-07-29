@@ -59,7 +59,7 @@ class Poll(BotPlugin):
         usage: !poll new <poll_title>
         """
         if not title:
-            return 'usage: !poll new <poll_title>'
+            return 'usage: %spoll new <poll_title>' % self.bot_config.BOT_PREFIX
 
         if title in self['polls']:
             return 'A poll with that title already exists.'
@@ -70,19 +70,19 @@ class Poll(BotPlugin):
         if not self['current_poll']:
             self['current_poll'] = title
 
-        return 'Poll created. Use !poll option to add options.'
+        return 'Poll created. Use %spoll option to add options.' % self.bot_config.BOT_PREFIX
 
     @botcmd
     def poll_remove(self, _, title):
         """Remove a poll."""
         if not title:
-            return 'usage: !poll remove <poll_title>'
+            return 'usage: %spoll remove <poll_title>' % self.bot_config.BOT_PREFIX
 
         with self.mutable('polls') as polls:
             try:
                 del polls[title]
             except KeyError as _:
-                return 'That poll does not exist. Use !poll list to see all polls.'
+                return 'That poll does not exist. Use %spoll list to see all polls.' % self.bot_config.BOT_PREFIX
         return 'Poll removed.'
 
     @botcmd
@@ -91,19 +91,19 @@ class Poll(BotPlugin):
         if self['polls']:
             return 'All Polls:\n' + \
                    '\n'.join([title + (' *' if title == self['current_poll'] else '') for title in self['polls']])
-        return 'No polls found. Use !poll new to add one.'
+        return 'No polls found. Use %spoll new to add one.' % self.bot_config.BOT_PREFIX
 
     @botcmd
     def poll_start(self, _, title):
         """Start a saved poll."""
         if self['current_poll']:
-            return '"%s" is currently running, use !poll end to finish it.' % self['current_poll']
+            return '"%s" is currently running, use %spoll end to finish it.' % (self['current_poll'], self.bot_config.BOT_PREFIX)
 
         if not title:
-            return 'usage: !poll start <poll_title>'
+            return 'usage: %spoll start <poll_title>' % self.bot_config.BOT_PREFIX
 
         if title not in self['polls']:
-            return 'Poll not found. Use !poll list to see all polls.'
+            return 'Poll not found. Use %spoll list to see all polls.' % self.bot_config.BOT_PREFIX
 
         self.reset_poll(title)
         self['current_poll'] = title
@@ -129,16 +129,16 @@ class Poll(BotPlugin):
         """Add an option to the currently running poll."""
         current_poll = self['current_poll']
         if not current_poll:
-            return 'No active poll. Use !poll start to start a poll.'
+            return 'No active poll. Use %spoll start to start a poll.' % self.bot_config.BOT_PREFIX
 
         if not option:
-            return 'usage: !poll option <poll_option>'
+            return 'usage: %spoll option <poll_option>' % self.bot_config.BOT_PREFIX
 
         with self.mutable('polls') as polls:
             poll = polls[current_poll]
 
             if option in poll.options:
-                return 'Option already exists. Use !poll show to see all options.'
+                return 'Option already exists. Use %spoll show to see all options.' % self.bot_config.BOT_PREFIX
 
             poll.options[option] = 0
 
@@ -150,7 +150,7 @@ class Poll(BotPlugin):
         current_poll = self['current_poll']
 
         if not current_poll:
-            return 'No active poll. Use !poll start to start a poll.'
+            return 'No active poll. Use %spoll start to start a poll.' % self.bot_config.BOT_PREFIX
 
         return '%s:\n%s' % (current_poll, str(self['polls'][current_poll]))
 
@@ -159,7 +159,7 @@ class Poll(BotPlugin):
         """Vote for the currently running poll."""
         current_poll = self['current_poll']
         if not current_poll:
-            return 'No active poll. Use !poll start to start a poll.'
+            return 'No active poll. Use %spoll start to start a poll.' % self.bot_config.BOT_PREFIX
 
         if not index:
             return 'usage: !vote <option_number>'
@@ -176,7 +176,7 @@ class Poll(BotPlugin):
             option = sorted(poll.options.keys())[index - 1]
 
             if option not in poll.options:
-                return 'Option not found. Use !poll show to see all options of the current poll.'
+                return 'Option not found. Use %spoll show to see all options of the current poll.' % self.bot_config.BOT_PREFIX
 
             if str(msg.frm) in poll.has_voted:
                 return 'You have already voted.'
