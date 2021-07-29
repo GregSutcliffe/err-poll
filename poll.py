@@ -185,6 +185,7 @@ class Poll(BotPlugin):
 
             poll.options[option] += 1
 
+            return "Thanks for voting! '%s' has %s votes." % (option, poll.options[option])
             # return '%s:\n%s' % (current_poll, str(poll))
 
     def reset_poll(self, title):
