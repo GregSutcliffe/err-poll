@@ -178,10 +178,10 @@ class Poll(BotPlugin):
             if option not in poll.options:
                 return 'Option not found. Use !poll show to see all options of the current poll.'
 
-            if msg.frm in poll.has_voted:
+            if str(msg.frm) in poll.has_voted:
                 return 'You have already voted.'
 
-            poll.has_voted.append(msg.frm)
+            poll.has_voted.append(str(msg.frm))
 
             poll.options[option] += 1
 
